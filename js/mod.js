@@ -49,6 +49,9 @@ function getPointGen() {
 	if (hasUpgrade('Leaves', 14)) gain = gain.times(upgradeEffect('Leaves', 14))
 	if (hasUpgrade('Leaves', 23)) gain = gain.times(2)
 	if (hasUpgrade('Leaves', 24)) gain = gain.times(10)
+	if (hasUpgrade('Sticks', 11)) gain = gain.times(3)
+	if (hasUpgrade('Sticks', 12)) gain = gain.times(upgradeEffect('Sticks', 12))
+	if (hasUpgrade('Leaves', 32)) gain = gain.times(4)
 	return gain
 }
 

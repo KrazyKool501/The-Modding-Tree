@@ -18,6 +18,9 @@ addLayer("Leaves", {
         if (hasUpgrade('Leaves', 21)) mult = mult.times(2)
         if (hasUpgrade('Leaves', 22)) mult = mult.times(upgradeEffect('Leaves', 22))
         if (hasUpgrade('Leaves', 23)) mult = mult.times(2)
+        if (hasUpgrade('Sticks', 13)) mult = mult.times(upgradeEffect('Sticks', 13))
+        if (hasUpgrade('Leaves', 31)) mult = mult.times(upgradeEffect('Leaves', 31))
+        if (hasUpgrade('Leaves', 32)) mult = mult.times(4)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -95,12 +98,100 @@ addLayer("Leaves", {
             },
         }, 
         24: {
-            title: "The Row 2 Finale",
+            title: "The Leaf Finale",
             description: "10x your acorns",
             cost: new Decimal(125),
             unlocked() {
                 return hasUpgrade('Leaves', 23);
             },
         },  
+        31: {
+            title: "Guess that wasn't the Finale",
+            description: "Increase acorn and leaf gain based on your sticks",
+            cost: new Decimal(10000),
+            effect() {
+                return player.Sticks.points.add(1).pow(0.3)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            unlocked() {
+                return hasUpgrade('Sticks', 14), hasUpgrade('Leaves', 24);
+            },
+        }, 
+        32: {
+            title: "Is it worth it?",
+            description: "Quadruple your acorns and leaves, but divide stick gain by 4",
+            cost: new Decimal(1000000),
+            unlocked() {
+                return hasUpgrade('Sticks', 14) && hasUpgrade('Leaves', 31);
+            },
+        }, 
+    },
+})
+addLayer("Sticks", {
+    name: "Sticks", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "S", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#4BDC13",
+    requires: new Decimal(5000), // Can be a function that takes requirement increases into account
+    resource: "Sticks", // Name of prestige currency
+    baseResource: "Acorns", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+            if (hasUpgrade('Leaves', 32)) mult = mult.divide(4)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "s", description: "S: Reset for sticks", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+    upgrades: {
+        11: {
+            title: "Sticks are OP",
+            description: "Triple your acorn gain",
+            cost: new Decimal(1),
+        },  
+        12: {
+            title: "One...",
+            description: "Increase acorn gain based on your sticks.",
+            cost: new Decimal(3),
+            effect() {
+                return player[this.layer].points.add(1).pow(0.75)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            unlocked() {
+                return hasUpgrade('Sticks', 11);
+            },
+        },
+        13: {
+            title: "...or the other",
+            description: "Increase leaf gain based on your sticks.",
+            cost: new Decimal(3),
+            effect() {
+                return player[this.layer].points.add(1).pow(0.75)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            unlocked() {
+                return hasUpgrade('Sticks', 11);
+            },
+        },
+        14: {
+            title: "1 Upgrade to 1 Row",
+            description: "Unlock a row of leaf upgrades",
+            cost: new Decimal(15),
+            unlocked() {
+                return hasUpgrade('Sticks', 12), hasUpgrade('Sticks', 13);
+            },
+        },
     },
 })
