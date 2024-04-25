@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "EvolvTree",
 	id: "evolvtreegameid",
-	author: "KrazyKool",
+	author: "KrazyKool501",
 	pointsName: "Acorns",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -43,6 +43,12 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade('Leaves', 11)) gain = gain.times(2)
+	if (hasUpgrade('Leaves', 12)) gain = gain.times(3)
+	if (hasUpgrade('Leaves', 13)) gain = gain.times(upgradeEffect('Leaves', 13))
+	if (hasUpgrade('Leaves', 14)) gain = gain.times(upgradeEffect('Leaves', 14))
+	if (hasUpgrade('Leaves', 23)) gain = gain.times(2)
+	if (hasUpgrade('Leaves', 24)) gain = gain.times(10)
 	return gain
 }
 
