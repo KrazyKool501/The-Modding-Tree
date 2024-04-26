@@ -108,23 +108,39 @@ addLayer("Leaves", {
         31: {
             title: "Guess that wasn't the Finale",
             description: "Increase acorn and leaf gain based on your sticks",
-            cost: new Decimal(10000),
+            cost: new Decimal(50000),
             effect() {
                 return player.Sticks.points.add(1).pow(0.3)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
             unlocked() {
-                return hasUpgrade('Sticks', 14), hasUpgrade('Leaves', 24);
+                return hasUpgrade('Sticks', 14) && hasUpgrade('Leaves', 24);
             },
         }, 
         32: {
             title: "Is it worth it?",
-            description: "Quadruple your acorns and leaves, but divide stick gain by 4",
-            cost: new Decimal(1000000),
+            description: "Quadruple your acorns and leaves, but divide stick gain by 2",
+            cost: new Decimal(750000),
             unlocked() {
                 return hasUpgrade('Sticks', 14) && hasUpgrade('Leaves', 31);
             },
         }, 
+        33: {
+            title: "Doesn't matter, you have to buy it anyway.",
+            description: "Sextuple Stick gain, but divide acorn gain by 2.",
+            cost: new Decimal(10000000),
+            unlocked() {
+                return hasUpgrade('Sticks', 14) && hasUpgrade('Leaves', 32);
+            },
+        },
+        34: {
+            title: "",
+            description: "Divide Acorn gain by 10.",
+            cost: new Decimal(500000000),
+            unlocked() {
+                return hasUpgrade('Sticks', 14) && hasUpgrade('Leaves', 32);
+            },
+        }
     },
 })
 addLayer("Sticks", {
@@ -136,15 +152,15 @@ addLayer("Sticks", {
 		points: new Decimal(0),
     }},
     color: "#4BDC13",
-    requires: new Decimal(5000), // Can be a function that takes requirement increases into account
+    requires: new Decimal(10000), // Can be a function that takes requirement increases into account
     resource: "Sticks", // Name of prestige currency
     baseResource: "Acorns", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
+    exponent: 0.3, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-            if (hasUpgrade('Leaves', 32)) mult = mult.divide(4)
+            if (hasUpgrade('Leaves', 32)) mult = mult.divide(2)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
